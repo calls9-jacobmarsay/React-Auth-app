@@ -1,10 +1,11 @@
+// import { is } from "@babel/types";
 import { useState, useRef } from "react";
 
 import classes from "./AuthForm.module.css";
 
 const AuthForm = () => {
   const [isLogin, setIsLogin] = useState(true);
-  const [error, setError] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
   const emailInputRef = useRef();
   const passwordInputRef = useRef();
 
@@ -14,10 +15,10 @@ const AuthForm = () => {
 
   const submitHandler = (event) => {
     event.preventDefault();
-
     const enteredEmail = emailInputRef.current.value;
     const enteredPassword = passwordInputRef.current.value;
 
+    setIsLoading(true);
     if (isLogin) {
     } else {
       fetch(
@@ -34,11 +35,13 @@ const AuthForm = () => {
           },
         }
       ).then((response) => {
+        setIsLoading(false);
         if (response.ok) {
         } else {
           return response.json().then((data) => {
             console.log(data);
-            setError(true);
+            let errorMessage = "Error; Please check your password/email";
+            alert(errorMessage);
           });
         }
       });
@@ -48,13 +51,6 @@ const AuthForm = () => {
   return (
     <section className={classes.auth}>
       <h1>{isLogin ? "Login" : "Sign Up"}</h1>
-      {error ? (
-        <p className={classes.error}>
-          Please use a stronger password/valid email
-        </p>
-      ) : (
-        ""
-      )}
       <form onSubmit={submitHandler}>
         <div className={classes.control}>
           <label htmlFor="email">Your Email</label>
@@ -70,7 +66,11 @@ const AuthForm = () => {
           />
         </div>
         <div className={classes.actions}>
-          <button>{isLogin ? "Login" : "Create Account"}</button>
+          {!isLoading ? (
+            <button>{isLogin ? "Login" : "Create Account"}</button>
+          ) : (
+            <p className={classes.loading}>Loading ...</p>
+          )}
           <button
             type="button"
             className={classes.toggle}
