@@ -19,33 +19,44 @@ const AuthForm = () => {
     const enteredPassword = passwordInputRef.current.value;
 
     setIsLoading(true);
+    let url;
     if (isLogin) {
+      url =
+        "https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key=AIzaSyBAJujuxy_kbq8TwZL1fNCj9clDzTfacAk";
     } else {
-      fetch(
-        "https://identitytoolkit.googleapis.com/v1/accounts:signUp?key=AIzaSyBAJujuxy_kbq8TwZL1fNCj9clDzTfacAk",
-        {
-          method: "POST",
-          body: JSON.stringify({
-            email: enteredEmail,
-            password: enteredPassword,
-            returnSecureToken: true,
-          }),
-          headers: {
-            "Content-Type": "application/json",
-          },
-        }
-      ).then((response) => {
+      url =
+        "https://identitytoolkit.googleapis.com/v1/accounts:signUp?key=AIzaSyBAJujuxy_kbq8TwZL1fNCj9clDzTfacAk";
+    }
+
+    fetch(url, {
+      method: "POST",
+      body: JSON.stringify({
+        email: enteredEmail,
+        password: enteredPassword,
+        returnSecureToken: true,
+      }),
+      headers: {
+        "Content-Type": "application/json",
+      },
+    })
+      .then((response) => {
         setIsLoading(false);
         if (response.ok) {
+          return response.json();
         } else {
           return response.json().then((data) => {
             console.log(data);
-            let errorMessage = "Error; Please check your password/email";
-            alert(errorMessage);
+            let errorMessage = "Error: Invalid Credentials";
+            throw new Error(errorMessage);
           });
         }
+      })
+      .then((data) => {
+        console.log(data);
+      })
+      .catch((error) => {
+        alert(error.message);
       });
-    }
   };
 
   return (
