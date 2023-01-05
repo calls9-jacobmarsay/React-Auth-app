@@ -1,16 +1,19 @@
 import { Link } from "react-router-dom";
 import { authActions } from "../../store/store";
 import { useSelector, useDispatch } from "react-redux";
-
+import { useHistory } from "react-router-dom";
 import classes from "./MainNavigation.module.css";
 
 const MainNavigation = () => {
   const dispatch = useDispatch();
+  const history = useHistory();
+
   const login = useSelector((state) => state.auth.isLoggedIn);
   console.log(login);
 
   const logoutHandler = () => {
     dispatch(authActions.logout());
+    history.replace("/auth");
   };
 
   return (
