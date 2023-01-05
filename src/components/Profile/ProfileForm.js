@@ -1,10 +1,13 @@
 import classes from "./ProfileForm.module.css";
 import { useRef } from "react";
 import { useSelector } from "react-redux";
+import { useHistory } from "react-router-dom";
 
 const ProfileForm = () => {
   const authToken = useSelector((state) => state.auth.token);
   const newPassword = useRef();
+  const history = useHistory();
+
   const changePasswordHandler = (event) => {
     event.preventDefault();
     const enteredNewPassword = newPassword.current.value;
@@ -22,7 +25,9 @@ const ProfileForm = () => {
           "Content-Type": "application/json",
         },
       }
-    ).then((response) => {});
+    ).then(() => {
+      history.replace("/auth");
+    });
   };
   return (
     <form onSubmit={changePasswordHandler} className={classes.form}>

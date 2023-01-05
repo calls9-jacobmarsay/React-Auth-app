@@ -1,7 +1,7 @@
 import { useState, useRef } from "react";
 import { useDispatch } from "react-redux";
 import { authActions } from "../../store/store";
-
+import { useHistory } from "react-router-dom";
 import classes from "./AuthForm.module.css";
 
 const AuthForm = () => {
@@ -11,6 +11,7 @@ const AuthForm = () => {
   const passwordInputRef = useRef();
 
   const dispatch = useDispatch();
+  const history = useHistory();
 
   const switchAuthModeHandler = () => {
     setIsLogin((prevState) => !prevState);
@@ -57,6 +58,7 @@ const AuthForm = () => {
       .then((data) => {
         console.log(data.idToken);
         dispatch(authActions.login(data.idToken));
+        history.replace("/");
       })
       .catch((error) => {
         alert(error.message);
